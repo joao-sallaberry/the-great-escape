@@ -7,41 +7,42 @@ Game.initialize = function() {
   this.entities = [];
   this.context = document.getElementById("canvas").getContext("2d");
 
-  // =====
-  // Example
-  this.rect_x = 0
-  this.rect_y = 0
-  // =====
+  this.screenWidth = 800
+  this.screenHeight = 600
+
+  this.road1_x = 0
+  this.road1_y = 0
+  this.road2_x = 0
+  this.road2_y = -this.screenHeight
+
+  this.road = new Image()
+  this.road.src = './assets/road.png'
 };
 
 
 Game.draw = function() {
-  this.context.clearRect(0, 0, 800, 600);
+  var rect = this.context.clearRect(0, 0, this.screenWidth, this.screenHeight);
 
-  // Your code goes here
+  // var ctx = this.context
+  // this.road.onload = function() {
+  //   console.log('imagem carregou')
+  // };
+  this.context.drawImage(this.road, this.road1_x, this.road1_y)
+  this.context.drawImage(this.road, this.road2_x, this.road2_y)
 
-  // =====
-  // Example
-  this.context.fillRect(this.rect_x, this.rect_y, 100, 100)
-  //=====
 };
 
 
 Game.update = function() {
-  // Your code goes here
+  // moves road
+  var road_speed = 5
+  this.road1_y += road_speed
+  if (this.road1_y >= this.screenHeight)
+    this.road1_y = -this.screenHeight
+  this.road2_y += road_speed
+  if (this.road2_y >= this.screenHeight)
+    this.road2_y = -this.screenHeight
 
-  // =====
-  // Example
-  this.rect_x += 1
-  if (this.rect_x >= 800) {
-    this.rect_x = -100
-  }
-
-  this.rect_y += 1
-  if (this.rect_y >= 600) {
-    this.rect_y = -100
-  }
-  // =====
 };
 
 
