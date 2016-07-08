@@ -92,7 +92,7 @@ Game.draw = function() {
 
   // draw road
   for (var i = this.roadSection.length - 1; i >= 0; i--)
-    this.context.drawImage(this.road, this.roadSection[i].x, this.roadSection[i].y, this.SCREEN_WIDTH, this.SCREEN_HEIGHT + 20)
+    this.context.drawImage(this.road, this.roadSection[i].x, this.roadSection[i].y, this.SCREEN_WIDTH, this.SCREEN_HEIGHT + 30)
 
   // draw car
   this.context.drawImage(this.player.img, this.player.x, this.player.y, this.player.W, this.player.H)
@@ -144,7 +144,7 @@ Game.draw = function() {
 
   // draw score
   this.context.fillStyle = 'black';
-  this.context.font = '30pt Tahoma';
+  this.context.font = '30pt Verdana, Geneva, sans-serif';
   this.context.fillText('Score: ' + this.score, 20, 50);
   this.context.fillText('High Score: ' + this.highScore, 20, 100);
 };
@@ -158,7 +158,7 @@ Game.update = function() {
   this.speedTimer++
   if (this.speedTimer > 300) {
     this.speedTimer = 0
-    this.roadSpeed += 5
+    this.roadSpeed += 1
     console.log('faster!')
   }
 
@@ -198,8 +198,8 @@ Game.update = function() {
   }
 
   // create obstacles
-  this.obsTimeCounter++
-  if (this.obsTimeCounter >= 90) {
+  this.obsTimeCounter += this.roadSpeed
+  if (this.obsTimeCounter >= 15 * Game.fps) {
     newObstacle()
     this.obsTimeCounter = 0
   }
