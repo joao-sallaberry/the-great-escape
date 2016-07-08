@@ -7,6 +7,13 @@ Game.initialize = function() {
   this.entities = [];
   this.context = document.getElementById("canvas").getContext("2d");
 
+  // score
+  this.score = 0
+  if (!this.highScore)
+    this.highScore = 0
+  this.roadSpeed = 5
+  this.speedTimer = 0
+
   this.SCREEN_WIDTH = 800
   this.SCREEN_HEIGHT = 600
 
@@ -85,7 +92,7 @@ Game.draw = function() {
 
   // draw road
   for (var i = this.roadSection.length - 1; i >= 0; i--)
-    this.context.drawImage(this.road, this.roadSection[i].x, this.roadSection[i].y)
+    this.context.drawImage(this.road, this.roadSection[i].x, this.roadSection[i].y, this.SCREEN_WIDTH, this.SCREEN_HEIGHT + 20)
 
   // draw car
   this.context.drawImage(this.player.img, this.player.x, this.player.y, this.player.W, this.player.H)
@@ -135,14 +142,29 @@ Game.draw = function() {
     )
   }
 
+  // draw score
+  this.context.fillStyle = 'black';
+  this.context.font = '30pt Tahoma';
+  this.context.fillText('Score: ' + this.score, 20, 50);
+  this.context.fillText('High Score: ' + this.highScore, 20, 100);
 };
 
 
 Game.update = function() {
+  //this.roadSpeed = 5
+  
+  // score
+  this.score += this.roadSpeed
+  this.speedTimer++
+  if (this.speedTimer > 300) {
+    this.speedTimer = 0
+    this.roadSpeed += 5
+    console.log('faster!')
+  }
+
   // moves road
-  var ROAD_SPEED = 5
   for (var i = this.roadSection.length - 1; i >= 0; i--) {
-    this.roadSection[i].y += ROAD_SPEED
+    this.roadSection[i].y += this.roadSpeed
     if (this.roadSection[i].y >= this.SCREEN_HEIGHT)
       this.roadSection[i].y = - this.SCREEN_HEIGHT
   }
@@ -222,10 +244,10 @@ Game.update = function() {
   for (var i = this.obstacles.length - 1; i >= 0; i--) {
     switch (this.obstacles[i].type) {
       case 'car':
-        this.obstacles[i].y += ROAD_SPEED / 2
+        this.obstacles[i].y += this.roadSpeed / 2
         break;
       default:
-        this.obstacles[i].y += ROAD_SPEED
+        this.obstacles[i].y += this.roadSpeed
     }
   }
 
@@ -275,7 +297,7 @@ Game.update = function() {
           break;
         case 'oil':
           if (!this.player.isSlidingTimer && circleCollision(this.obstacles[i]))
-            this.player.isSlidingTimer = 100
+            this.player.isSlidingTimer = 50
             this.player.slideSide = Math.floor((Math.random() * 2))
           break;
       }
@@ -284,8 +306,11 @@ Game.update = function() {
   else { // game over
     if (this.explosion.timeOut++ >= this.fps / 15) {
       this.explosion.timeOut = 0
-      if (this.explosion.currSprite++ == this.explosion.ROWS * this.explosion.COLS - 1)
+      if (this.explosion.currSprite++ == this.explosion.ROWS * this.explosion.COLS - 1) {
+        if (this.score > this.highScore)
+          this.highScore = this.score
         Game.initialize()
+      }
     }
   }
   
